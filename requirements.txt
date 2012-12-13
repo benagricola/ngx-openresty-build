@@ -1,0 +1,8 @@
+Fabric==1.5.1
+ProxyTypes==0.9
+cuisine==0.4.4
+paramiko==1.9.0
+pycrypto==2.6
+python-vagrant==0.2.0
+ssh==1.8.0
+wsgiref==0.1.2

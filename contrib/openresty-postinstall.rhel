@@ -1,0 +1,13 @@
+# Register the openresty service
+if [ $1 -eq 1 ]; then
+    /sbin/chkconfig --add openresty
+    cat <<BANNER
+----------------------------------------------------------------------
+
+SQUIZ UK Custom Openresty / Nginx
+
+Ben Agricola <bagricola@squiz.co.uk>
+
+----------------------------------------------------------------------
+BANNER
+fi

@@ -1,0 +1,54 @@
+#! /bin/sh
+# preinst script for openresty
+
+set -e
+
+addopenrestyuser() {
+    # creating openresty group if he isn't already there
+    if ! getent group openresty >/dev/null; then
+        addgroup --system openresty >/dev/null
+    fi
+
+    # creating openresty user if he isn't already there
+    if ! getent passwd openresty >/dev/null; then
+        adduser \
+          --system \
+          --disabled-login \
+          --ingroup openresty \
+          --no-create-home \
+          --home /nonexistent \
+          --gecos "openresty user" \
+          --shell /bin/false \
+          openresty  >/dev/null
+    fi
+}
+
+case "$1" in
+    install)
+        addopenrestyuser
+        cat <<BANNER
+----------------------------------------------------------------------
+
+SQUIZ UK Custom Openresty / Nginx
+
+Ben Agricola <bagricola@squiz.co.uk>
+
+----------------------------------------------------------------------
+BANNER
+        ;;
+    upgrade)
+        addopenrestyuser
+        ;;
+
+    abort-upgrade)
+        ;;
+
+    *)
+        echo "preinst called with unknown argument \`$1'" >&2
+        exit 0
+        ;;
+esac
+
+
+
+exit 0
