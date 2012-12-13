@@ -135,7 +135,7 @@ default_configure_cmd = (
     '--user=openresty --group=openresty'
 )
 
-@parallel
+@parallel(pool_size=2)
 def build_openresty(version='1.2.4.11',configure_cmd=default_configure_cmd):
 
     make_cmd = 'make'
@@ -188,7 +188,9 @@ def package_openresty(version='1.2.4.11',iteration='1'):
     }
 
     ensure_local_dir('build-out')
-
+    user_ensure('openresty')
+    group_ensure('openresty')
+    
     with cd('build-temp/ngx_openresty-%s' % (version,)):
 
         with settings(warn_only=True):
