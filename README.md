@@ -2,7 +2,7 @@
 
 ## Intro
 
-The idea of this is to spawn vagrant VM's, build openresty or whatever (currently just openresty), then clean up and shut down.
+The idea of this is to spawn Virtualbox VM's using vagrant, build openresty or whatever (currently just openresty), then clean up and shut down.
 
 ## Supports
 

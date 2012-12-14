@@ -170,9 +170,10 @@ def package_openresty(version='1.2.4.11',iteration='1'):
         "--vendor 'SquizUK' -m 'Ben Agricola <bagricola@squiz.co.uk>' "
         "%(scripts)s "
         "--rpm-os 'linux-gnu' -a 'native' "
-        "--rpm-user openresty --rpm-group openresty "
-        "--deb-user openresty --deb-group openresty "
-        "-n openresty --config-files '/etc/openresty/openresty.conf' -s dir -t %(target)s -- *"
+        "--rpm-user root --rpm-group root --deb-user root --deb-group root "
+        "--config-files /etc/openresty/openresty.conf "
+        "--directories /var/cache/openresty --directories /etc/openresty --directories /var/log/openresty "
+        "-n openresty -s dir -t %(target)s -- *"
     )
 
     targetName,s = get_target()
@@ -188,9 +189,7 @@ def package_openresty(version='1.2.4.11',iteration='1'):
     }
 
     ensure_local_dir('build-out')
-    user_ensure('openresty')
-    group_ensure('openresty')
-    
+
     with cd('build-temp/ngx_openresty-%s' % (version,)):
 
         with settings(warn_only=True):
@@ -210,6 +209,7 @@ def package_openresty(version='1.2.4.11',iteration='1'):
             args['scripts'] = ' '.join(args['scripts'])
 
             with cd('buildoutput'):
+                ensure_remote_dir('var/cache/openresty')
                 result = run(fpm_command % args)
 
         with cd('buildoutput'), lcd('build-out'):
@@ -221,6 +221,10 @@ def build_clean():
     local('rm -rf build-temp')
     with cd('~'):
         run('rm -rf build-temp')
+
+@parallel
+def shutdown():
+    v.halt(vm_name=get_target()[0])
 
 def local_file_exists(file):
     with settings(warn_only=True, hide=True):
