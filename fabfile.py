@@ -64,14 +64,14 @@ def bootstrap(*targets):
     
 def config_openresty():
     avail_targets = {
-        'precise_64': {
+        'trusty_64': {
             'package_provider': 'apt',
-            'packages': 'ruby1.9.1 rubygems build-essential libreadline-dev libncurses5-dev libpcre3-dev libssl-dev perl',
+            'packages': 'ruby ruby-dev build-essential libreadline-dev libncurses5-dev libpcre3-dev libssl-dev perl',
             'gems': ['fpm'],
             'fpm': {
                 'deps': ['libreadline6 >= 6.2-8','libpcre3 >= 8'],
                 'target': 'deb',
-                'platform': 'precise',
+                'platform': 'trusty',
                 'files': {
                     'contrib/openresty-initd.debian': 'buildoutput/etc/init.d/openresty',
                     'contrib/openresty-preinstall.debian': 'openresty-preinstall.sh',
@@ -79,14 +79,14 @@ def config_openresty():
                 }
             }
         },
-        'precise_32': {
+        'trusty_32': {
             'package_provider': 'apt',
             'packages': 'ruby1.9.1 rubygems build-essential libreadline-dev libncurses5-dev libpcre3-dev libssl-dev perl',
             'gems': ['fpm'],
             'fpm': {
                 'deps': ['libreadline6 >= 6.2-8','libpcre3 >= 8'],
                 'target': 'deb',
-                'platform': 'precise',
+                'platform': 'trusty',
                 'files': {
                     'contrib/openresty-initd.debian': 'buildoutput/etc/init.d/openresty',
                     'contrib/openresty-preinstall.debian': 'openresty-preinstall.sh',
@@ -94,14 +94,14 @@ def config_openresty():
                 }
             }
         },
-        'sl63_64': {
+        'sl65_64': {
             'package_provider': 'yum',
             'packages': 'rpm-build ruby ruby-devel rubygems readline-devel pcre-devel openssl-devel perl make gcc',
             'gems': ['fpm'],
             'fpm': {
-                'deps': ['readline >= 5','pcre >= 6.6-6'],
+                'deps': ['readline >= 5','pcre >= 7.8-6'],
                 'target': 'rpm',
-                'platform': 'sl6',
+                'platform': 'el6',
                 'files': {
                     'contrib/openresty-initd.rhel': 'buildoutput/etc/init.d/openresty',
                     'contrib/openresty-preinstall.rhel': 'openresty-preinstall.sh',
@@ -136,7 +136,7 @@ default_configure_cmd = (
 )
 
 @parallel(pool_size=2)
-def build_openresty(version='1.2.4.11',configure_cmd=default_configure_cmd):
+def build_openresty(version='1.7.0.1',configure_cmd=default_configure_cmd):
 
     make_cmd = 'make'
     install_cmd = 'make all install DESTDIR=$PWD/buildoutput'
@@ -161,13 +161,13 @@ def build_openresty(version='1.2.4.11',configure_cmd=default_configure_cmd):
 
 
 @parallel
-def package_openresty(version='1.2.4.11',iteration='1'):
+def package_openresty(version='1.7.0.1',iteration='1'):
 
     fpm_command = (
         "fpm -v '%(version)s' --iteration '%(iteration)s' %(deps)s "
-        "--url 'https://github.com/organizations/squizuk' "
+        "--url 'https://github.com/organizations/hstack' "
         "--description 'OpenResty LUA application server, bundling nginx.' "
-        "--vendor 'SquizUK' -m 'Ben Agricola <bagricola@squiz.co.uk>' "
+        "--vendor 'OSS' -m 'amuraru@adobe.com' "
         "%(scripts)s "
         "--rpm-os 'linux-gnu' -a 'native' "
         "--rpm-user root --rpm-group root --deb-user root --deb-group root "
