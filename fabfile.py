@@ -73,7 +73,7 @@ def config_openresty():
                 'target': 'deb',
                 'platform': 'trusty',
                 'files': {
-                    'contrib/openresty-initd.debian': 'buildoutput/etc/init.d/openresty',
+                    'contrib/openresty-initd.debian': 'buildoutput/etc/init.d/nginx',
                     'contrib/openresty-preinstall.debian': 'openresty-preinstall.sh',
                     'contrib/openresty-postinstall.debian': 'openresty-postinstall.sh'
                 }
@@ -103,7 +103,7 @@ def config_openresty():
                 'target': 'rpm',
                 'platform': 'el6',
                 'files': {
-                    'contrib/openresty-initd.rhel': 'buildoutput/etc/init.d/openresty',
+                    'contrib/openresty-initd.rhel': 'buildoutput/etc/init.d/nginx',
                     'contrib/openresty-preinstall.rhel': 'openresty-preinstall.sh',
                     'contrib/openresty-postinstall.rhel': 'openresty-postinstall.sh'
                 }
@@ -120,19 +120,19 @@ def prereqs_openresty():
 
 
 default_configure_cmd = (
-    './configure --with-luajit --prefix=/etc/openresty/ '
-    '--sbin-path=/usr/sbin/openresty '
-    '--conf-path=/etc/openresty/openresty.conf '
-    '--error-log-path=/var/log/openresty/error.log '
-    '--http-log-path=/var/log/openresty/access.log '
-    '--pid-path=/var/run/openresty.pid '
-    '--lock-path=/var/run/openresty.lock '
-    '--http-client-body-temp-path=/var/cache/openresty/client_temp '
-    '--http-proxy-temp-path=/var/cache/openresty/proxy_temp '
-    '--http-fastcgi-temp-path=/var/cache/openresty/fastcgi_temp '
-    '--http-uwsgi-temp-path=/var/cache/openresty/uwsgi_temp '
-    '--http-scgi-temp-path=/var/cache/openresty/scgi_temp '
-    '--user=openresty --group=openresty'
+    './configure --with-luajit --prefix=/usr/share/ '
+    '--sbin-path=/usr/sbin/nginx '
+    '--conf-path=/etc/nginx/nginx.conf '
+    '--error-log-path=/var/log/nginx/error.log '
+    '--http-log-path=/var/log/nginx/access.log '
+    '--pid-path=/var/run/nginx.pid '
+    '--lock-path=/var/run/nginx.lock '
+    '--http-client-body-temp-path=/var/cache/nginx/client_temp '
+    '--http-proxy-temp-path=/var/cache/nginx/proxy_temp '
+    '--http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp '
+    '--http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp '
+    '--http-scgi-temp-path=/var/cache/nginx/scgi_temp '
+    '--user=nginx --group=nginx'
 )
 
 @parallel(pool_size=2)
@@ -165,14 +165,15 @@ def package_openresty(version='1.7.2.1',iteration='1'):
 
     fpm_command = (
         "fpm -v '%(version)s' --iteration '%(iteration)s' %(deps)s "
-        "--url 'https://github.com/organizations/hstack' "
+        "--url 'https://github.com/amuraru' "
         "--description 'OpenResty LUA application server, bundling nginx.' "
         "--vendor 'OSS' -m 'amuraru@adobe.com' "
+        "--conflicts 'nginx' "
         "%(scripts)s "
         "--rpm-os 'linux-gnu' -a 'native' "
         "--rpm-user root --rpm-group root --deb-user root --deb-group root "
-        "--config-files /etc/openresty/openresty.conf "
-        "--directories /var/cache/openresty --directories /etc/openresty --directories /var/log/openresty "
+        "--config-files /etc/nginx/nginx.conf "
+        "--directories /var/cache/nginx --directories /etc/nginx --directories /usr/share/nginx  --directories /var/log/nginx "
         "-n openresty -s dir -t %(target)s -- *"
     )
 
@@ -209,7 +210,7 @@ def package_openresty(version='1.7.2.1',iteration='1'):
             args['scripts'] = ' '.join(args['scripts'])
 
             with cd('buildoutput'):
-                ensure_remote_dir('var/cache/openresty')
+                ensure_remote_dir('var/cache/nginx')
                 result = run(fpm_command % args)
 
         with cd('buildoutput'), lcd('build-out'):
