@@ -73,6 +73,10 @@ def config_openresty():
                 'target': 'deb',
                 'platform': 'trusty',
                 'files': {
+                    'conf/nginx.conf': 'buildoutput/etc/nginx/nginx.conf',
+                    'conf/conf.d/default.conf': 'buildoutput/etc/nginx/conf.d/default.conf',
+                    'conf/conf.d/virtual.conf': 'buildoutput/etc/nginx/conf.d/virtual.conf',
+                    'conf/conf.d/ssl.conf': 'buildoutput/etc/nginx/conf.d/ssl.conf',
                     'contrib/openresty-initd.debian': 'buildoutput/etc/init.d/nginx',
                     'contrib/openresty-preinstall.debian': 'openresty-preinstall.sh',
                     'contrib/openresty-postinstall.debian': 'openresty-postinstall.sh'
@@ -88,6 +92,10 @@ def config_openresty():
                 'target': 'deb',
                 'platform': 'trusty',
                 'files': {
+                    'conf/nginx.conf': 'buildoutput/etc/nginx/nginx.conf',
+                    'conf/conf.d/default.conf': 'buildoutput/etc/nginx/conf.d/default.conf',
+                    'conf/conf.d/virtual.conf': 'buildoutput/etc/nginx/conf.d/virtual.conf',
+                    'conf/conf.d/ssl.conf': 'buildoutput/etc/nginx/conf.d/ssl.conf',
                     'contrib/openresty-initd.debian': 'buildoutput/etc/init.d/nginx',
                     'contrib/openresty-preinstall.debian': 'openresty-preinstall.sh',
                     'contrib/openresty-postinstall.debian': 'openresty-postinstall.sh'
@@ -103,6 +111,10 @@ def config_openresty():
                 'target': 'rpm',
                 'platform': 'el6',
                 'files': {
+                    'conf/nginx.conf': 'buildoutput/etc/nginx/nginx.conf',
+                    'conf/conf.d/default.conf': 'buildoutput/etc/nginx/conf.d/default.conf',
+                    'conf/conf.d/virtual.conf': 'buildoutput/etc/nginx/conf.d/virtual.conf',
+                    'conf/conf.d/ssl.conf': 'buildoutput/etc/nginx/conf.d/ssl.conf',
                     'contrib/openresty-initd.rhel': 'buildoutput/etc/init.d/nginx',
                     'contrib/openresty-preinstall.rhel': 'openresty-preinstall.sh',
                     'contrib/openresty-postinstall.rhel': 'openresty-postinstall.sh'
