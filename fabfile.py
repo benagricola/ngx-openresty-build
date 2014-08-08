@@ -88,7 +88,7 @@ def config_openresty():
                 'target': 'deb',
                 'platform': 'trusty',
                 'files': {
-                    'contrib/openresty-initd.debian': 'buildoutput/etc/init.d/openresty',
+                    'contrib/openresty-initd.debian': 'buildoutput/etc/init.d/nginx',
                     'contrib/openresty-preinstall.debian': 'openresty-preinstall.sh',
                     'contrib/openresty-postinstall.debian': 'openresty-postinstall.sh'
                 }
@@ -120,7 +120,7 @@ def prereqs_openresty():
 
 
 default_configure_cmd = (
-    './configure --with-luajit --prefix=/usr/share/ '
+    './configure --with-luajit --prefix=/usr/share '
     '--sbin-path=/usr/sbin/nginx '
     '--conf-path=/etc/nginx/nginx.conf '
     '--error-log-path=/var/log/nginx/error.log '
@@ -132,7 +132,16 @@ default_configure_cmd = (
     '--http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp '
     '--http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp '
     '--http-scgi-temp-path=/var/cache/nginx/scgi_temp '
-    '--user=nginx --group=nginx'
+    '--user=nginx --group=nginx '
+    '--with-http_ssl_module --with-http_realip_module '
+    '--with-http_addition_module --with-http_sub_module '
+    '--with-http_dav_module --with-http_flv_module '
+    '--with-http_mp4_module --with-http_gunzip_module '
+    '--with-http_gzip_static_module --with-http_random_index_module '
+    '--with-http_secure_link_module --with-http_stub_status_module '
+    '--with-mail --with-mail_ssl_module '
+    '--with-file-aio --with-ipv6 '
+    '--with-cc-opt="-O2 -g -pipe -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=4 -m64 -mtune=generic"'
 )
 
 @parallel(pool_size=2)
@@ -165,7 +174,7 @@ def package_openresty(version='1.7.2.1',iteration='1'):
 
     fpm_command = (
         "fpm -v '%(version)s' --iteration '%(iteration)s' %(deps)s "
-        "--url 'https://github.com/amuraru' "
+        "--url 'https://github.com/amuraru/ngx-openresty-build' "
         "--description 'OpenResty LUA application server, bundling nginx.' "
         "--vendor 'OSS' -m 'amuraru@adobe.com' "
         "--conflicts 'nginx' "
@@ -173,7 +182,7 @@ def package_openresty(version='1.7.2.1',iteration='1'):
         "--rpm-os 'linux-gnu' -a 'native' "
         "--rpm-user root --rpm-group root --deb-user root --deb-group root "
         "--config-files /etc/nginx/nginx.conf "
-        "--directories /var/cache/nginx --directories /etc/nginx --directories /usr/share/nginx  --directories /var/log/nginx "
+        "--directories /var/cache/nginx --directories /etc/nginx --directories /etc/nginx/conf.d --directories /usr/share/nginx  --directories /var/log/nginx "
         "-n openresty -s dir -t %(target)s -- *"
     )
 
@@ -211,6 +220,7 @@ def package_openresty(version='1.7.2.1',iteration='1'):
 
             with cd('buildoutput'):
                 ensure_remote_dir('var/cache/nginx')
+                ensure_remote_dir('etc/nginx/conf.d')
                 result = run(fpm_command % args)
 
         with cd('buildoutput'), lcd('build-out'):
@@ -245,3 +255,4 @@ def ensure_remote_dir(dir):
 
         if run('test -d "%s"' % (dir,)).failed:
             run('mkdir -p %s' % (dir,))
+
