@@ -145,6 +145,7 @@ default_configure_cmd = (
     '--http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp '
     '--http-scgi-temp-path=/var/cache/nginx/scgi_temp '
     '--user=nginx --group=nginx '
+    '--with-pcre-jit '
     '--with-http_ssl_module --with-http_realip_module '
     '--with-http_addition_module --with-http_sub_module '
     '--with-http_dav_module --with-http_flv_module '
