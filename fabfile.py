@@ -190,7 +190,7 @@ def package_openresty(version='1.7.2.1',iteration='1'):
         "fpm -v '%(version)s' --iteration '%(iteration)s' %(deps)s "
         "--url 'https://github.com/amuraru/ngx-openresty-build' "
         "--description 'OpenResty LUA application server, bundling nginx.' "
-        "--vendor 'OSS' -m 'amuraru@adobe.com' "
+        "--vendor 'OSS' --license '2-clause BSD-like license' -m 'amuraru@adobe.com' "
         "--replaces 'nginx' --provides 'nginx' "
         "%(scripts)s "
         "--rpm-os 'linux-gnu' -a 'native' "
