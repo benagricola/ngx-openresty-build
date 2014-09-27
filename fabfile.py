@@ -151,8 +151,9 @@ default_configure_cmd = (
     '--with-http_mp4_module --with-http_gunzip_module '
     '--with-http_gzip_static_module --with-http_random_index_module '
     '--with-http_secure_link_module --with-http_stub_status_module '
+    '--with-http_auth_request_module '
     '--with-mail --with-mail_ssl_module '
-    '--with-file-aio --with-ipv6 '
+    '--with-file-aio --with-ipv6 --with-http_spdy_module '
     '--with-cc-opt="-O2 -g -pipe -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=4 -m64 -mtune=generic"'
 )
 
