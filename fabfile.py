@@ -165,7 +165,7 @@ def build_openresty(version='1.7.7.1',configure_cmd=default_configure_cmd):
     install_cmd = 'make all install DESTDIR=$PWD/buildoutput'
 
     source_file = 'ngx_openresty-%s.tar.gz' % (version,)
-    source_url = 'http://agentzh.org/download'
+    source_url = 'http://openresty.org/download' #'http://10.131.237.143/openresty'
 
     ensure_local_dir('build-temp')
 
