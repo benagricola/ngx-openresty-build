@@ -24,7 +24,7 @@ def provision_packages(packages='',provider=None):
 
     with mode_sudo():
         select_package(provider)
-        package_ensure(packages,update=True)
+        package_ensure(packages,update=False)
 
     return True
 
@@ -32,7 +32,7 @@ def provision_gems(gems=''):
     with mode_sudo():
         for gem in gems:
             if not gem in run('gem list %s' % (gem,)):
-                run('gem install %s' % (gem,))
+                run('gem install --no-ri --no-rdoc %s' % (gem,))
 
     return True
 
@@ -72,6 +72,7 @@ def config_openresty():
                 'deps': ['libreadline6 >= 6.2-8','libpcre3 >= 8'],
                 'target': 'deb',
                 'platform': 'trusty',
+                'iteration': '2.openresty',
                 'files': {
                     'conf/nginx.conf': 'buildoutput/etc/nginx/nginx.conf',
                     'conf/conf.d/default.conf': 'buildoutput/etc/nginx/conf.d/default.conf',
@@ -91,6 +92,7 @@ def config_openresty():
                 'deps': ['libreadline6 >= 6.2-8','libpcre3 >= 8'],
                 'target': 'deb',
                 'platform': 'trusty',
+                'iteration': '2.openresty',
                 'files': {
                     'conf/nginx.conf': 'buildoutput/etc/nginx/nginx.conf',
                     'conf/conf.d/default.conf': 'buildoutput/etc/nginx/conf.d/default.conf',
@@ -110,6 +112,7 @@ def config_openresty():
                 'deps': ['readline >= 5','pcre >= 7.8-6'],
                 'target': 'rpm',
                 'platform': 'el6',
+                'iteration': '2.openresty.el6',
                 'files': {
                     'conf/nginx.conf': 'buildoutput/etc/nginx/nginx.conf',
                     'conf/conf.d/default.conf': 'buildoutput/etc/nginx/conf.d/default.conf',
@@ -161,7 +164,7 @@ default_configure_cmd = (
 @parallel(pool_size=2)
 def build_openresty(version='1.7.7.1',configure_cmd=default_configure_cmd):
 
-    make_cmd = 'make'
+    make_cmd = 'make -j4'
     install_cmd = 'make all install DESTDIR=$PWD/buildoutput'
 
     source_file = 'ngx_openresty-%s.tar.gz' % (version,)
@@ -184,7 +187,7 @@ def build_openresty(version='1.7.7.1',configure_cmd=default_configure_cmd):
 
 
 @parallel
-def package_openresty(version='1.7.7.1',iteration='1'):
+def package_openresty(version='1.7.7.1'):
 
     fpm_command = (
         "fpm -v '%(version)s' --iteration '%(iteration)s' %(deps)s "
@@ -197,7 +200,7 @@ def package_openresty(version='1.7.7.1',iteration='1'):
         "--rpm-user root --rpm-group root --deb-user root --deb-group root "
         "--config-files /etc/nginx/nginx.conf "
         "--directories /var/cache/nginx --directories /etc/nginx --directories /etc/nginx/conf.d --directories /usr/share/nginx  --directories /var/log/nginx "
-        "-n openresty -s dir -t %(target)s -- *"
+        "-n nginx -s dir -t %(target)s -- *"
     )
 
     targetName,s = get_target()
@@ -206,7 +209,7 @@ def package_openresty(version='1.7.7.1',iteration='1'):
 
     args = {
         'version': version,
-        'iteration': iteration,
+        'iteration': s['fpm']['iteration'],
         'deps': ' '.join(["-d '%s'" % (dep,) for dep in s['fpm']['deps']]),
         'scripts': [],
         'target': ext
