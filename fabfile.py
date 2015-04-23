@@ -123,6 +123,26 @@ def config_openresty():
                     'contrib/openresty-postinstall.rhel': 'openresty-postinstall.sh'
                 }
             },
+        },
+        'ct7_64': {
+            'package_provider': 'yum',
+            'packages': 'rpm-build ruby ruby-devel rubygems readline-devel pcre-devel openssl-devel perl make gcc',
+            'gems': ['fpm'],
+            'fpm': {
+                'deps': ['readline >= 5','pcre >= 7.8-6'],
+                'target': 'rpm',
+                'platform': 'el7',
+                'iteration': '2.openresty.el7',
+                'files': {
+                    'conf/nginx.conf': 'buildoutput/etc/nginx/nginx.conf',
+                    'conf/conf.d/default.conf': 'buildoutput/etc/nginx/conf.d/default.conf',
+                    'conf/conf.d/virtual.conf': 'buildoutput/etc/nginx/conf.d/virtual.conf',
+                    'conf/conf.d/ssl.conf': 'buildoutput/etc/nginx/conf.d/ssl.conf',
+                    'contrib/openresty-initd.rhel': 'buildoutput/etc/init.d/nginx',
+                    'contrib/openresty-preinstall.rhel': 'openresty-preinstall.sh',
+                    'contrib/openresty-postinstall.rhel': 'openresty-postinstall.sh'
+                }
+            },
         }
     }
 

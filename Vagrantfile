@@ -2,11 +2,19 @@
 # vi: set ft=ruby :
 Vagrant.configure("2") do |config|
 
+  config.vm.define :ct7_64 do |ct7_64|
+    ct7_64.vm.box     = 'jayunit100/centos7'
+    ct7_64.vm.provider :virtualbox do |vb|
+      vb.customize ["modifyvm", :id, "--memory", "512", "--cpus", "5"]
+      vb.customize ["modifyvm", :id, "--nictype1", "virtio"]
+      vb.customize ["modifyvm", :id, "--hpet", "on"]
+    end
+  end
   config.vm.define :sl65_64 do |sl65_64|
     sl65_64.vm.box     = 'centos66-hansode'
     sl65_64.vm.box_url = 'https://vagrantcloud.com/hansode/boxes/centos-6.6-x86_64/versions/0.1.0/providers/virtualbox.box' 
     sl65_64.vm.provider :virtualbox do |vb|
-      vb.customize ["modifyvm", :id, "--memory", "512", "--cpus", "4"]
+      vb.customize ["modifyvm", :id, "--memory", "512", "--cpus", "5"]
       vb.customize ["modifyvm", :id, "--nictype1", "virtio"]
       vb.customize ["modifyvm", :id, "--hpet", "on"]
     end
