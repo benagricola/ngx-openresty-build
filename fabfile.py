@@ -72,7 +72,7 @@ def config_openresty():
                 'deps': ['libreadline6 >= 6.2-8','libpcre3 >= 8'],
                 'target': 'deb',
                 'platform': 'trusty',
-                'iteration': '1.openresty',
+                'iteration': '2.openresty',
                 'files': {
                     'conf/nginx.conf': 'buildoutput/etc/nginx/nginx.conf',
                     'conf/conf.d/default.conf': 'buildoutput/etc/nginx/conf.d/default.conf',
@@ -93,7 +93,7 @@ def config_openresty():
                 'deps': ['libreadline6 >= 6.2-8','libpcre3 >= 8'],
                 'target': 'deb',
                 'platform': 'trusty',
-                'iteration': '1.openresty',
+                'iteration': '2.openresty',
                 'files': {
                     'conf/nginx.conf': 'buildoutput/etc/nginx/nginx.conf',
                     'conf/conf.d/default.conf': 'buildoutput/etc/nginx/conf.d/default.conf',
@@ -114,7 +114,7 @@ def config_openresty():
                 'deps': ['readline >= 5','pcre >= 7.8-6'],
                 'target': 'rpm',
                 'platform': 'el6',
-                'iteration': '1.openresty.el6',
+                'iteration': '2.openresty.el6',
                 'files': {
                     'conf/nginx.conf': 'buildoutput/etc/nginx/nginx.conf',
                     'conf/conf.d/default.conf': 'buildoutput/etc/nginx/conf.d/default.conf',
@@ -135,7 +135,7 @@ def config_openresty():
                 'deps': ['readline >= 5','pcre >= 7.8-6'],
                 'target': 'rpm',
                 'platform': 'el7',
-                'iteration': '1.openresty.el7',
+                'iteration': '2.openresty.el7',
                 'files': {
                     'conf/nginx.conf': 'buildoutput/etc/nginx/nginx.conf',
                     'conf/conf.d/default.conf': 'buildoutput/etc/nginx/conf.d/default.conf',
@@ -199,14 +199,21 @@ def build_openresty(version='1.7.10.2',configure_cmd=default_configure_cmd):
     with lcd('./build-temp'):
         if not local_file_exists(source_file):
             local('wget -O %s %s/%s' % (source_file,source_url,source_file))
+            local('wget https://github.com/pintsized/lua-resty-http/archive/a730f90.tar.gz -O lua-resty-http.tar.gz')
 
         #console.confirm('Do you want to continue?', default=True)
         ensure_remote_dir('build-temp')
         put(source_file,'build-temp')
+        put('lua-resty-http.tar.gz', 'build-temp')
         with cd('build-temp'):
-            run('pwd')
             run('tar xzf %s' % (source_file,))
+            run('tar xzf lua-resty-http.tar.gz')
             with cd('ngx_openresty-%s' % (version,)):
+                # add lua-resty-http
+                run('mv ../lua-resty-http-* bundle/lua-resty-http-0.06')
+                run("sed -i 's/for my $key (qw(/for my $key (qw(http /g' configure")
+                run('ls -la bundle/')
+                # build
                 run('%s && %s && %s' % (configure_cmd,make_cmd,install_cmd))
 
 

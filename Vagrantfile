@@ -11,8 +11,8 @@ Vagrant.configure("2") do |config|
     end
   end
   config.vm.define :sl65_64 do |sl65_64|
-    sl65_64.vm.box     = 'centos66-hansode'
-    sl65_64.vm.box_url = 'https://vagrantcloud.com/hansode/boxes/centos-6.6-x86_64/versions/0.1.0/providers/virtualbox.box' 
+    sl65_64.vm.box     = 'centos66-tommy'
+    sl65_64.vm.box_url = 'https://github.com/tommy-muehle/puppet-vagrant-boxes/releases/download/1.0.0/centos-6.6-x86_64.box' 
     sl65_64.vm.provider :virtualbox do |vb|
       vb.customize ["modifyvm", :id, "--memory", "512", "--cpus", "5"]
       vb.customize ["modifyvm", :id, "--nictype1", "virtio"]
