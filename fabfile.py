@@ -114,7 +114,7 @@ def config_openresty():
                 'deps': ['readline >= 5','pcre >= 7.8-6'],
                 'target': 'rpm',
                 'platform': 'el6',
-                'iteration': '2.openresty.el6',
+                'iteration': '1.openresty.el6',
                 'files': {
                     'conf/nginx.conf': 'buildoutput/etc/nginx/nginx.conf',
                     'conf/conf.d/default.conf': 'buildoutput/etc/nginx/conf.d/default.conf',
@@ -135,7 +135,7 @@ def config_openresty():
                 'deps': ['readline >= 5','pcre >= 7.8-6'],
                 'target': 'rpm',
                 'platform': 'el7',
-                'iteration': '2.openresty.el7',
+                'iteration': '1.openresty.el7',
                 'files': {
                     'conf/nginx.conf': 'buildoutput/etc/nginx/nginx.conf',
                     'conf/conf.d/default.conf': 'buildoutput/etc/nginx/conf.d/default.conf',
@@ -186,7 +186,7 @@ default_configure_cmd = (
 )
 
 @parallel(pool_size=2)
-def build_openresty(version='1.7.10.2',configure_cmd=default_configure_cmd):
+def build_openresty(version='1.9.3.1',configure_cmd=default_configure_cmd):
 
     make_cmd = 'make -j4'
     install_cmd = 'make all install DESTDIR=$PWD/buildoutput'
@@ -218,7 +218,7 @@ def build_openresty(version='1.7.10.2',configure_cmd=default_configure_cmd):
 
 
 @parallel
-def package_openresty(version='1.7.10.2'):
+def package_openresty(version='1.9.3.1'):
 
     fpm_command = (
         "fpm -v '%(version)s' --iteration '%(iteration)s' %(deps)s "
