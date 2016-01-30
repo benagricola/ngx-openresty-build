@@ -191,7 +191,7 @@ def build_openresty(version='1.9.7.3',configure_cmd=default_configure_cmd):
     make_cmd = 'make -j4'
     install_cmd = 'make all install DESTDIR=$PWD/buildoutput'
 
-    source_file = 'ngx_openresty-%s.tar.gz' % (version,)
+    source_file = 'openresty-%s.tar.gz' % (version,)
     source_url = 'http://openresty.org/download' #'http://10.131.237.143/openresty'
 
     ensure_local_dir('build-temp')
@@ -208,7 +208,7 @@ def build_openresty(version='1.9.7.3',configure_cmd=default_configure_cmd):
         with cd('build-temp'):
             run('tar xzf %s' % (source_file,))
             run('tar xzf lua-resty-http.tar.gz')
-            with cd('ngx_openresty-%s' % (version,)):
+            with cd('openresty-%s' % (version,)):
                 # add lua-resty-http
                 run('mv ../lua-resty-http-* bundle/lua-resty-http-0.06')
                 run("sed -i 's/for my $key (qw(/for my $key (qw(http /g' configure")
@@ -248,7 +248,7 @@ def package_openresty(version='1.9.7.3'):
 
     ensure_local_dir('build-out')
 
-    with cd('build-temp/ngx_openresty-%s' % (version,)):
+    with cd('build-temp/openresty-%s' % (version,)):
 
         with settings(warn_only=True):
             # Upload all required files to needed directory
