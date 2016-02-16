@@ -199,7 +199,7 @@ def build_openresty(version='1.9.7.3',configure_cmd=default_configure_cmd):
     with lcd('./build-temp'):
         if not local_file_exists(source_file):
             local('wget -O %s %s/%s' % (source_file,source_url,source_file))
-            local('wget https://github.com/pintsized/lua-resty-http/archive/a730f90.tar.gz -O lua-resty-http.tar.gz')
+            local('wget https://github.com/pintsized/lua-resty-http/archive/v0.07.tar.gz -O lua-resty-http.tar.gz')
 
         #console.confirm('Do you want to continue?', default=True)
         ensure_remote_dir('build-temp')
@@ -210,7 +210,7 @@ def build_openresty(version='1.9.7.3',configure_cmd=default_configure_cmd):
             run('tar xzf lua-resty-http.tar.gz')
             with cd('openresty-%s' % (version,)):
                 # add lua-resty-http
-                run('mv ../lua-resty-http-* bundle/lua-resty-http-0.06')
+                run('mv ../lua-resty-http-* bundle/lua-resty-http-0.07')
                 run("sed -i 's/for my $key (qw(/for my $key (qw(http /g' configure")
                 run('ls -la bundle/')
                 # build
