@@ -200,18 +200,24 @@ def build_openresty(version='1.9.7.3',configure_cmd=default_configure_cmd):
         if not local_file_exists(source_file):
             local('wget -O %s %s/%s' % (source_file,source_url,source_file))
             local('wget https://github.com/pintsized/lua-resty-http/archive/v0.07.tar.gz -O lua-resty-http.tar.gz')
+            local('wget https://github.com/openresty/stream-lua-nginx-module/archive/master.tar.gz -O stream-lua-nginx-module.tar.gz')
 
         #console.confirm('Do you want to continue?', default=True)
         ensure_remote_dir('build-temp')
         put(source_file,'build-temp')
         put('lua-resty-http.tar.gz', 'build-temp')
+        put('stream-lua-nginx-module.tar.gz', 'build-temp')
         with cd('build-temp'):
             run('tar xzf %s' % (source_file,))
             run('tar xzf lua-resty-http.tar.gz')
+            run('tar xzf stream-lua-nginx-module.tar.gz')
             with cd('openresty-%s' % (version,)):
                 # add lua-resty-http
                 run('mv ../lua-resty-http-* bundle/lua-resty-http-0.07')
                 run("sed -i 's/for my $key (qw(/for my $key (qw(http /g' configure")
+                # add external modules
+                run('mv ../stream-lua-nginx-module-master bundle/')
+                configure_cmd+=' --with-stream --with-stream_ssl_module --add-module=bundle/stream-lua-nginx-module-master'
                 run('ls -la bundle/')
                 # build
                 run('%s && %s && %s' % (configure_cmd,make_cmd,install_cmd))
