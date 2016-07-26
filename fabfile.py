@@ -186,7 +186,7 @@ default_configure_cmd = (
 )
 
 @parallel(pool_size=2)
-def build_openresty(version='1.9.7.3',configure_cmd=default_configure_cmd):
+def build_openresty(version='1.9.15.1',configure_cmd=default_configure_cmd):
 
     make_cmd = 'make -j4'
     install_cmd = 'make all install DESTDIR=$PWD/buildoutput'
@@ -224,7 +224,7 @@ def build_openresty(version='1.9.7.3',configure_cmd=default_configure_cmd):
 
 
 @parallel
-def package_openresty(version='1.9.7.3'):
+def package_openresty(version='1.9.15.1'):
 
     fpm_command = (
         "fpm -v '%(version)s' --iteration '%(iteration)s' %(deps)s "
