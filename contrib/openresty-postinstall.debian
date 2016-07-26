@@ -6,15 +6,15 @@ if [ "$1" != "configure" ]; then
     exit 0
 fi
 
-if [ -x "/etc/init.d/openresty" ]; then
-    if [ -f "/var/run/openresty.pid" ] && kill -0 `cat /var/run/openresty.pid` >/dev/null; then
-        /etc/init.d/openresty upgrade || true
+if [ -x "/etc/init.d/nginx" ]; then
+    if [ -f "/var/run/nginx.pid" ] && kill -0 `cat /var/run/nginx.pid` >/dev/null; then
+        /etc/init.d/nginx upgrade || true
     else
-        update-rc.d openresty defaults >/dev/null
+        update-rc.d nginx defaults >/dev/null
         if [ -x "`which invoke-rc.d 2>/dev/null`" ]; then
-            invoke-rc.d openresty start || true
+            invoke-rc.d nginx start || true
         else
-            /etc/init.d/openresty start || true
+            /etc/init.d/nginx start || true
         fi
     fi
 fi

@@ -1,42 +1,42 @@
 #!/bin/sh
 #
-# openresty        Startup script for openresty
+# nginx        Startup script for nginx
 #
 # chkconfig: - 85 15
-# processname: openresty
-# config: /etc/openresty/openresty.conf
-# config: /etc/sysconfig/openresty
-# pidfile: /var/run/openresty.pid
-# description: openresty is a HTTP and reverse proxy server
+# processname: nginx
+# config: /etc/nginx/nginx.conf
+# config: /etc/sysconfig/nginx
+# pidfile: /var/run/nginx.pid
+# description: nginx is a HTTP and reverse proxy server
 #
 ### BEGIN INIT INFO
-# Provides: openresty
+# Provides: nginx
 # Required-Start: $local_fs $remote_fs $network
 # Required-Stop: $local_fs $remote_fs $network
 # Default-Start: 2 3 4 5
 # Default-Stop: 0 1 6
-# Short-Description: start and stop openresty
+# Short-Description: start and stop nginx
 ### END INIT INFO
 
 # Source function library.
 . /etc/rc.d/init.d/functions
 
-if [ -f /etc/sysconfig/openresty ]; then
-    . /etc/sysconfig/openresty
+if [ -f /etc/sysconfig/nginx ]; then
+    . /etc/sysconfig/nginx
 fi
 
-prog=openresty
-openresty=${OPENRESTY-/usr/sbin/openresty}
-conffile=${CONFFILE-/etc/openresty/openresty.conf}
-lockfile=${LOCKFILE-/var/run/openresty.lock}
-pidfile=${PIDFILE-/var/run/openresty.pid}
+prog=nginx
+nginx=${OPENRESTY-/usr/sbin/nginx}
+conffile=${CONFFILE-/etc/nginx/nginx.conf}
+lockfile=${LOCKFILE-/var/run/nginx.lock}
+pidfile=${PIDFILE-/var/run/nginx.pid}
 SLEEPMSEC=100000
 RETVAL=0
 
 start() {
     echo -n $"Starting $prog: "
 
-    daemon --pidfile=${pidfile} ${openresty} -c ${conffile}
+    daemon --pidfile=${pidfile} ${nginx} -c ${conffile}
     RETVAL=$?
     echo
     [ $RETVAL = 0 ] && touch ${lockfile}
@@ -89,13 +89,13 @@ configtest() {
         esac
         shift
     fi
-    ${openresty} -t -c ${conffile} $FLAG
+    ${nginx} -t -c ${conffile} $FLAG
     RETVAL=$?
     return $RETVAL
 }
 
 rh_status() {
-    status -p ${pidfile} ${openresty}
+    status -p ${pidfile} ${nginx}
 }
 
 # See how we were called.

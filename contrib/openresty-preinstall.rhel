@@ -1,6 +1,6 @@
-# Add the "openresty" user
-getent group openresty >/dev/null || groupadd -r openresty
-getent passwd openresty >/dev/null || \
-    useradd -r -g openresty -s /sbin/nologin \
-    -d /var/cache/openresty -c "openresty user"  openresty
+# Add the "nginx" user
+getent group nginx >/dev/null || groupadd -r nginx
+getent passwd nginx >/dev/null || \
+    useradd -r -g nginx -s /sbin/nologin \
+    -d /var/cache/nginx -c "nginx user"  nginx
 exit 0

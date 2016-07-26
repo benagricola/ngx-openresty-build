@@ -24,7 +24,7 @@ def provision_packages(packages='',provider=None):
 
     with mode_sudo():
         select_package(provider)
-        package_ensure(packages,update=True)
+        package_ensure(packages,update=False)
 
     return True
 
@@ -32,7 +32,7 @@ def provision_gems(gems=''):
     with mode_sudo():
         for gem in gems:
             if not gem in run('gem list %s' % (gem,)):
-                run('gem install %s' % (gem,))
+                run('gem install --no-ri --no-rdoc %s' % (gem,))
 
     return True
 
@@ -64,46 +64,85 @@ def bootstrap(*targets):
     
 def config_openresty():
     avail_targets = {
-        'precise_64': {
+        'trusty_64': {
+            'package_provider': 'apt',
+            'packages': 'ruby ruby-dev build-essential libreadline-dev libncurses5-dev libpcre3-dev libssl-dev perl',
+            'gems': ['fpm'],
+            'fpm': {
+                'deps': ['libreadline6 >= 6.2-8','libpcre3 >= 8'],
+                'target': 'deb',
+                'platform': 'trusty',
+                'iteration': '2.openresty',
+                'files': {
+                    'conf/nginx.conf': 'buildoutput/etc/nginx/nginx.conf',
+                    'conf/conf.d/default.conf': 'buildoutput/etc/nginx/conf.d/default.conf',
+                    'conf/conf.d/virtual.conf': 'buildoutput/etc/nginx/conf.d/virtual.conf',
+                    'conf/conf.d/ssl.conf': 'buildoutput/etc/nginx/conf.d/ssl.conf',
+                    'conf/logrotate.d/nginx': 'buildoutput/etc/logrotate.d/nginx',
+                    'contrib/openresty-initd.debian': 'buildoutput/etc/init.d/nginx',
+                    'contrib/openresty-preinstall.debian': 'openresty-preinstall.sh',
+                    'contrib/openresty-postinstall.debian': 'openresty-postinstall.sh'
+                }
+            }
+        },
+        'trusty_32': {
             'package_provider': 'apt',
             'packages': 'ruby1.9.1 rubygems build-essential libreadline-dev libncurses5-dev libpcre3-dev libssl-dev perl',
             'gems': ['fpm'],
             'fpm': {
                 'deps': ['libreadline6 >= 6.2-8','libpcre3 >= 8'],
                 'target': 'deb',
-                'platform': 'precise',
+                'platform': 'trusty',
+                'iteration': '2.openresty',
                 'files': {
-                    'contrib/openresty-initd.debian': 'buildoutput/etc/init.d/openresty',
+                    'conf/nginx.conf': 'buildoutput/etc/nginx/nginx.conf',
+                    'conf/conf.d/default.conf': 'buildoutput/etc/nginx/conf.d/default.conf',
+                    'conf/conf.d/virtual.conf': 'buildoutput/etc/nginx/conf.d/virtual.conf',
+                    'conf/conf.d/ssl.conf': 'buildoutput/etc/nginx/conf.d/ssl.conf',
+                    'conf/logrotate.d/nginx': 'buildoutput/etc/logrotate.d/nginx',
+                    'contrib/openresty-initd.debian': 'buildoutput/etc/init.d/nginx',
                     'contrib/openresty-preinstall.debian': 'openresty-preinstall.sh',
                     'contrib/openresty-postinstall.debian': 'openresty-postinstall.sh'
                 }
             }
         },
-        'precise_32': {
-            'package_provider': 'apt',
-            'packages': 'ruby1.9.1 rubygems build-essential libreadline-dev libncurses5-dev libpcre3-dev libssl-dev perl',
-            'gems': ['fpm'],
-            'fpm': {
-                'deps': ['libreadline6 >= 6.2-8','libpcre3 >= 8'],
-                'target': 'deb',
-                'platform': 'precise',
-                'files': {
-                    'contrib/openresty-initd.debian': 'buildoutput/etc/init.d/openresty',
-                    'contrib/openresty-preinstall.debian': 'openresty-preinstall.sh',
-                    'contrib/openresty-postinstall.debian': 'openresty-postinstall.sh'
-                }
-            }
-        },
-        'sl63_64': {
+        'sl65_64': {
             'package_provider': 'yum',
             'packages': 'rpm-build ruby ruby-devel rubygems readline-devel pcre-devel openssl-devel perl make gcc',
             'gems': ['fpm'],
             'fpm': {
-                'deps': ['readline >= 5','pcre >= 6.6-6'],
+                'deps': ['readline >= 5','pcre >= 7.8-6'],
                 'target': 'rpm',
-                'platform': 'sl6',
+                'platform': 'el6',
+                'iteration': '1.openresty.el6',
                 'files': {
-                    'contrib/openresty-initd.rhel': 'buildoutput/etc/init.d/openresty',
+                    'conf/nginx.conf': 'buildoutput/etc/nginx/nginx.conf',
+                    'conf/conf.d/default.conf': 'buildoutput/etc/nginx/conf.d/default.conf',
+                    'conf/conf.d/virtual.conf': 'buildoutput/etc/nginx/conf.d/virtual.conf',
+                    'conf/conf.d/ssl.conf': 'buildoutput/etc/nginx/conf.d/ssl.conf',
+                    'conf/logrotate.d/nginx': 'buildoutput/etc/logrotate.d/nginx',
+                    'contrib/openresty-initd.rhel': 'buildoutput/etc/init.d/nginx',
+                    'contrib/openresty-preinstall.rhel': 'openresty-preinstall.sh',
+                    'contrib/openresty-postinstall.rhel': 'openresty-postinstall.sh'
+                }
+            },
+        },
+        'ct7_64': {
+            'package_provider': 'yum',
+            'packages': 'rpm-build ruby ruby-devel rubygems readline-devel pcre-devel openssl-devel perl make gcc',
+            'gems': ['fpm'],
+            'fpm': {
+                'deps': ['readline >= 5','pcre >= 7.8-6'],
+                'target': 'rpm',
+                'platform': 'el7',
+                'iteration': '1.openresty.el7',
+                'files': {
+                    'conf/nginx.conf': 'buildoutput/etc/nginx/nginx.conf',
+                    'conf/conf.d/default.conf': 'buildoutput/etc/nginx/conf.d/default.conf',
+                    'conf/conf.d/virtual.conf': 'buildoutput/etc/nginx/conf.d/virtual.conf',
+                    'conf/conf.d/ssl.conf': 'buildoutput/etc/nginx/conf.d/ssl.conf',
+                    'conf/logrotate.d/nginx': 'buildoutput/etc/logrotate.d/nginx',
+                    'contrib/openresty-initd.rhel': 'buildoutput/etc/init.d/nginx',
                     'contrib/openresty-preinstall.rhel': 'openresty-preinstall.sh',
                     'contrib/openresty-postinstall.rhel': 'openresty-postinstall.sh'
                 }
@@ -120,60 +159,85 @@ def prereqs_openresty():
 
 
 default_configure_cmd = (
-    './configure --with-luajit --prefix=/etc/openresty/ '
-    '--sbin-path=/usr/sbin/openresty '
-    '--conf-path=/etc/openresty/openresty.conf '
-    '--error-log-path=/var/log/openresty/error.log '
-    '--http-log-path=/var/log/openresty/access.log '
-    '--pid-path=/var/run/openresty.pid '
-    '--lock-path=/var/run/openresty.lock '
-    '--http-client-body-temp-path=/var/cache/openresty/client_temp '
-    '--http-proxy-temp-path=/var/cache/openresty/proxy_temp '
-    '--http-fastcgi-temp-path=/var/cache/openresty/fastcgi_temp '
-    '--http-uwsgi-temp-path=/var/cache/openresty/uwsgi_temp '
-    '--http-scgi-temp-path=/var/cache/openresty/scgi_temp '
-    '--user=openresty --group=openresty'
+    './configure --with-luajit --prefix=/usr/share '
+    '--sbin-path=/usr/sbin/nginx '
+    '--conf-path=/etc/nginx/nginx.conf '
+    '--error-log-path=/var/log/nginx/error.log '
+    '--http-log-path=/var/log/nginx/access.log '
+    '--pid-path=/var/run/nginx.pid '
+    '--lock-path=/var/run/nginx.lock '
+    '--http-client-body-temp-path=/var/cache/nginx/client_temp '
+    '--http-proxy-temp-path=/var/cache/nginx/proxy_temp '
+    '--http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp '
+    '--http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp '
+    '--http-scgi-temp-path=/var/cache/nginx/scgi_temp '
+    '--user=nginx --group=nginx '
+    '--with-pcre-jit '
+    '--with-http_ssl_module --with-http_realip_module '
+    '--with-http_addition_module --with-http_sub_module '
+    '--with-http_dav_module --with-http_flv_module '
+    '--with-http_mp4_module --with-http_gunzip_module '
+    '--with-http_gzip_static_module --with-http_random_index_module '
+    '--with-http_secure_link_module --with-http_stub_status_module '
+    '--with-http_auth_request_module '
+    '--with-mail --with-mail_ssl_module '
+    '--with-file-aio --with-ipv6 --with-http_v2_module '
+    '--with-cc-opt="-O2 -g -pipe -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=4 -m64 -mtune=generic"'
 )
 
 @parallel(pool_size=2)
-def build_openresty(version='1.2.4.11',configure_cmd=default_configure_cmd):
+def build_openresty(version='1.9.15.1',configure_cmd=default_configure_cmd):
 
-    make_cmd = 'make'
+    make_cmd = 'make -j4'
     install_cmd = 'make all install DESTDIR=$PWD/buildoutput'
 
-    source_file = 'ngx_openresty-%s.tar.gz' % (version,)
-    source_url = 'http://agentzh.org/misc/nginx'
+    source_file = 'openresty-%s.tar.gz' % (version,)
+    source_url = 'http://openresty.org/download' #'http://10.131.237.143/openresty'
 
     ensure_local_dir('build-temp')
 
     with lcd('./build-temp'):
         if not local_file_exists(source_file):
             local('wget -O %s %s/%s' % (source_file,source_url,source_file))
+            local('wget https://github.com/pintsized/lua-resty-http/archive/v0.07.tar.gz -O lua-resty-http.tar.gz')
+            local('wget https://github.com/openresty/stream-lua-nginx-module/archive/master.tar.gz -O stream-lua-nginx-module.tar.gz')
 
         #console.confirm('Do you want to continue?', default=True)
         ensure_remote_dir('build-temp')
         put(source_file,'build-temp')
+        put('lua-resty-http.tar.gz', 'build-temp')
+        put('stream-lua-nginx-module.tar.gz', 'build-temp')
         with cd('build-temp'):
-            run('pwd')
             run('tar xzf %s' % (source_file,))
-            with cd('ngx_openresty-%s' % (version,)):
+            run('tar xzf lua-resty-http.tar.gz')
+            run('tar xzf stream-lua-nginx-module.tar.gz')
+            with cd('openresty-%s' % (version,)):
+                # add lua-resty-http
+                run('mv ../lua-resty-http-* bundle/lua-resty-http-0.07')
+                run("sed -i 's/for my $key (qw(/for my $key (qw(http /g' configure")
+                # add external modules
+                run('mv ../stream-lua-nginx-module-master bundle/')
+                configure_cmd+=' --with-stream --with-stream_ssl_module --add-module=bundle/stream-lua-nginx-module-master'
+                run('ls -la bundle/')
+                # build
                 run('%s && %s && %s' % (configure_cmd,make_cmd,install_cmd))
 
 
 @parallel
-def package_openresty(version='1.2.4.11',iteration='1'):
+def package_openresty(version='1.9.15.1'):
 
     fpm_command = (
         "fpm -v '%(version)s' --iteration '%(iteration)s' %(deps)s "
-        "--url 'https://github.com/organizations/squizuk' "
+        "--url 'https://github.com/amuraru/ngx-openresty-build' "
         "--description 'OpenResty LUA application server, bundling nginx.' "
-        "--vendor 'SquizUK' -m 'Ben Agricola <bagricola@squiz.co.uk>' "
+        "--vendor 'OSS' --license '2-clause BSD-like license' -m 'amuraru@adobe.com' "
+        "--provides 'nginx' "
         "%(scripts)s "
         "--rpm-os 'linux-gnu' -a 'native' "
         "--rpm-user root --rpm-group root --deb-user root --deb-group root "
-        "--config-files /etc/openresty/openresty.conf "
-        "--directories /var/cache/openresty --directories /etc/openresty --directories /var/log/openresty "
-        "-n openresty -s dir -t %(target)s -- *"
+        "--config-files /etc/nginx/nginx.conf "
+        "--directories /var/cache/nginx --directories /etc/nginx --directories /etc/nginx/conf.d --directories /usr/share/nginx  --directories /var/log/nginx "
+        "-n nginx -s dir -t %(target)s -- *"
     )
 
     targetName,s = get_target()
@@ -182,7 +246,7 @@ def package_openresty(version='1.2.4.11',iteration='1'):
 
     args = {
         'version': version,
-        'iteration': iteration,
+        'iteration': s['fpm']['iteration'],
         'deps': ' '.join(["-d '%s'" % (dep,) for dep in s['fpm']['deps']]),
         'scripts': [],
         'target': ext
@@ -190,7 +254,7 @@ def package_openresty(version='1.2.4.11',iteration='1'):
 
     ensure_local_dir('build-out')
 
-    with cd('build-temp/ngx_openresty-%s' % (version,)):
+    with cd('build-temp/openresty-%s' % (version,)):
 
         with settings(warn_only=True):
             # Upload all required files to needed directory
@@ -209,7 +273,8 @@ def package_openresty(version='1.2.4.11',iteration='1'):
             args['scripts'] = ' '.join(args['scripts'])
 
             with cd('buildoutput'):
-                ensure_remote_dir('var/cache/openresty')
+                ensure_remote_dir('var/cache/nginx')
+                ensure_remote_dir('etc/nginx/conf.d')
                 result = run(fpm_command % args)
 
         with cd('buildoutput'), lcd('build-out'):
@@ -244,3 +309,4 @@ def ensure_remote_dir(dir):
 
         if run('test -d "%s"' % (dir,)).failed:
             run('mkdir -p %s' % (dir,))
+

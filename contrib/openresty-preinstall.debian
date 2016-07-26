@@ -1,43 +1,34 @@
 #! /bin/sh
-# preinst script for openresty
+# preinst script for nginx
 
 set -e
 
-addopenrestyuser() {
-    # creating openresty group if he isn't already there
-    if ! getent group openresty >/dev/null; then
-        addgroup --system openresty >/dev/null
+addnginxuser() {
+    # creating nginx group if he isn't already there
+    if ! getent group nginx >/dev/null; then
+        addgroup --system nginx >/dev/null
     fi
 
-    # creating openresty user if he isn't already there
-    if ! getent passwd openresty >/dev/null; then
+    # creating nginx user if he isn't already there
+    if ! getent passwd nginx >/dev/null; then
         adduser \
           --system \
           --disabled-login \
-          --ingroup openresty \
+          --ingroup nginx \
           --no-create-home \
           --home /nonexistent \
-          --gecos "openresty user" \
+          --gecos "nginx user" \
           --shell /bin/false \
-          openresty  >/dev/null
+          nginx  >/dev/null
     fi
 }
 
 case "$1" in
     install)
-        addopenrestyuser
-        cat <<BANNER
-----------------------------------------------------------------------
-
-SQUIZ UK Custom Openresty / Nginx
-
-Ben Agricola <bagricola@squiz.co.uk>
-
-----------------------------------------------------------------------
-BANNER
+        addnginxuser
         ;;
     upgrade)
-        addopenrestyuser
+        addnginxuser
         ;;
 
     abort-upgrade)
